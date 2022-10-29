@@ -19,6 +19,7 @@ class Renderer
 		virtual void render(float pos_x, float pos_y) {};
 		virtual void setViewMatrix(glm::mat4 view) {};
 		virtual void setProjectionMatrix(glm::mat4 projection) {};
+		GLuint compileShader();
 	public:
 		void render();
 		void addRenderable(Renderable *renderable);

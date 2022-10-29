@@ -6,6 +6,26 @@
 
 #include "renderable.h"
 
+GLuint Renderer::compileShader()
+{
+	GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
+	const char *vertexSource = this->getVertexShaderSource();
+	glShaderSource(vertexShader, 1, &vertexSource, NULL);
+	glCompileShader(vertexShader);
+
+	GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+	const char *fragmentSource = this->getFragmentShaderSource();
+	glShaderSource(fragmentShader, 1, &fragmentSource, NULL);
+	glCompileShader(fragmentShader);
+
+	GLuint shaderProgram = glCreateProgram();
+	glAttachShader(shaderProgram, vertexShader);
+	glAttachShader(shaderProgram, fragmentShader);
+	glLinkProgram(shaderProgram);
+
+	return shaderProgram;
+}
+
 void Renderer::render()
 {
 	glBindVertexArray(this->vao);
