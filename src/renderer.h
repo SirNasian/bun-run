@@ -13,15 +13,14 @@ class Renderer
 		GLuint vao;
 		GLuint shader;
 		GLuint texture;
+		GLint modelMatrixLocation, viewMatrixLocation, projectionMatrixLocation;
 		std::list<Renderable*> renderables;
 		virtual const char* getVertexShaderSource() { return ""; };
 		virtual const char* getFragmentShaderSource() { return ""; };
 		virtual void render(float pos_x, float pos_y) {};
-		virtual void setViewMatrix(glm::mat4 view) {};
-		virtual void setProjectionMatrix(glm::mat4 projection) {};
 		GLuint compileShader();
 	public:
-		void render();
+		void render(glm::mat4 view, glm::mat4 projection);
 		void addRenderable(Renderable *renderable);
 		void removeRenderable(Renderable *renderable);
 };

@@ -2,6 +2,8 @@
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 #include "renderable.h"
 #include "sprite-renderer.h"
@@ -19,7 +21,7 @@ int main()
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
-	window = glfwCreateWindow(640, 640, "Bun Run!", NULL, NULL);
+	window = glfwCreateWindow(640, 480, "Bun Run!", NULL, NULL);
 	if (!window)
 	{
 		glfwTerminate();
@@ -37,7 +39,15 @@ int main()
 	}
 
 	SpriteRenderer renderer;
-	renderer.addRenderable(new Renderable());
+	renderer.addRenderable(new Renderable(1.0f, 1.0f));
+	renderer.addRenderable(new Renderable(3.0f, 2.0f));
+
+	glm::mat4 projection = glm::ortho(0.0f, 20.0f, 0.0f, 15.0f, 0.0f, 10.0f);
+	glm::mat4 view = glm::lookAt(
+		glm::vec3(0.0f, 0.0f, 1.0f),
+		glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(0.0f, 1.0f, 0.0f)
+	);
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -46,7 +56,7 @@ int main()
 	{
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		renderer.render();
+		renderer.render(view, projection);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();

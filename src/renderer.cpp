@@ -3,6 +3,8 @@
 #include <list>
 
 #include <GL/glew.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include "renderable.h"
 
@@ -26,11 +28,13 @@ GLuint Renderer::compileShader()
 	return shaderProgram;
 }
 
-void Renderer::render()
+void Renderer::render(glm::mat4 view, glm::mat4 projection)
 {
 	glBindVertexArray(this->vao);
 	glUseProgram(this->shader);
 	glBindTexture(GL_TEXTURE_2D, this->texture);
+	glUniformMatrix4fv(this->viewMatrixLocation, 1, GL_FALSE, glm::value_ptr(view));
+	glUniformMatrix4fv(this->projectionMatrixLocation, 1, GL_FALSE, glm::value_ptr(projection));
 	for (Renderable* renderable: this->renderables)
 		this->render(renderable->getPosX(), renderable->getPosY());
 }

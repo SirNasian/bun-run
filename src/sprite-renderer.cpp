@@ -1,11 +1,17 @@
 #include "sprite-renderer.h"
 
 #include <GL/glew.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 SpriteRenderer::SpriteRenderer()
 {
 	// Compile Shader
 	this->shader = this->compileShader();
+	this->modelMatrixLocation = glGetUniformLocation(this->shader, "modelMatrix");
+	this->viewMatrixLocation = glGetUniformLocation(this->shader, "viewMatrix");
+	this->projectionMatrixLocation = glGetUniformLocation(this->shader, "projectionMatrix");
 	this->texture = 0;
 
 	// Generate VAO
@@ -54,9 +60,12 @@ const char* SpriteRenderer::getVertexShaderSource()
 	return R"glsl(
 		#version 150 core
 		in vec2 position;
+		uniform mat4 modelMatrix;
+		uniform mat4 viewMatrix;
+		uniform mat4 projectionMatrix;
 		void main()
 		{
-			gl_Position = vec4(position, 0.0, 1.0);
+			gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(position, 0.0, 1.0);
 		}
 	)glsl";
 }
@@ -77,15 +86,7 @@ const char* SpriteRenderer::getFragmentShaderSource()
 
 void SpriteRenderer::render(float pos_x, float pos_y)
 {
+	glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(pos_x, pos_y, 0.0f));
+	glUniformMatrix4fv(this->modelMatrixLocation, 1, GL_FALSE, glm::value_ptr(model));
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-}
-
-void SpriteRenderer::setViewMatrix(glm::mat4 view)
-{
-	// TODO: implement this
-}
-
-void SpriteRenderer::setProjectionMatrix(glm::mat4 projection)
-{
-	// TODO: implement this
 }
