@@ -6,16 +6,6 @@
 
 #include "renderable.h"
 
-Renderer::Renderer()
-{
-	// TODO: set up vao, shader, and texture
-}
-
-Renderer::~Renderer()
-{
-	// TODO: clean up vao, shader, and texture
-}
-
 void Renderer::render()
 {
 	glBindVertexArray(this->vao);
@@ -25,17 +15,12 @@ void Renderer::render()
 		this->render(renderable->getPosX(), renderable->getPosY());
 }
 
-void Renderer::setViewMatrix(glm::mat4 view)
-{
-	// TODO: implement this
-}
-
-void Renderer::setProjectionMatrix(glm::mat4 projection)
-{
-	// TODO: implement this
-}
-
 void Renderer::addRenderable(Renderable *renderable)
 {
 	this->renderables.push_back(renderable);
+}
+
+void Renderer::removeRenderable(Renderable *renderable)
+{
+	this->renderables.remove(renderable);
 }
