@@ -54,6 +54,8 @@ int main()
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+	double lastRun = glfwGetTime();
+	double currRun = lastRun;
 	while (!glfwWindowShouldClose(window))
 	{
 		glClear(GL_COLOR_BUFFER_BIT);
@@ -66,6 +68,10 @@ int main()
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
+
+		currRun = glfwGetTime();
+		std::cout << 1.0f/(currRun-lastRun) << std::endl;
+		lastRun = glfwGetTime();
 	}
 
 	glfwTerminate();
