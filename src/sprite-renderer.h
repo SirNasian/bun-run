@@ -4,7 +4,7 @@
 
 #include "renderer.h"
 
-class SpriteRenderer: public Renderer
+class SpriteRenderer: public Renderer<Renderable>
 {
 	protected:
 		const char* getVertexShaderSource();

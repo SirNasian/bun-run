@@ -39,10 +39,9 @@ int main()
 	}
 
 	SpriteRenderer renderer;
-	Renderable renderable;
-	renderer.addRenderable(new Renderable(1.0f, 1.0f));
-	renderer.addRenderable(new Renderable(3.0f, 2.0f));
-	renderer.addRenderable(&renderable);
+	renderer.createRenderable<Renderable>()->setPosition(1.0f, 1.0f);
+	renderer.createRenderable<Renderable>()->setPosition(3.0f, 2.0f);
+	Renderable *renderable = renderer.createRenderable<Renderable>();
 
 	glm::mat4 projection = glm::ortho(0.0f, 20.0f, 0.0f, 15.0f, 0.0f, 10.0f);
 	glm::mat4 view = glm::lookAt(
@@ -63,7 +62,7 @@ int main()
 		double pos_x, pos_y;
 		glfwGetCursorPos(window, &pos_x, &pos_y);
 
-		renderable.setPosition(pos_x*(20.0f/640.0f), 15.0f-pos_y*(15.0f/480.0f));
+		renderable->setPosition(pos_x*(20.0f/640.0f), 15.0f-pos_y*(15.0f/480.0f));
 		renderer.render(view, projection);
 
 		glfwSwapBuffers(window);
