@@ -20,10 +20,10 @@ SpriteRenderer::SpriteRenderer()
 
 	// Generate VBO (data)
 	float vertices[] = {
-		-0.5f,  0.5f,
-		 0.5f,  0.5f,
-		 0.5f, -0.5f,
 		-0.5f, -0.5f,
+		-0.5f,  0.5f,
+		 0.5f, -0.5f,
+		 0.5f,  0.5f,
 	};
 
 	// Generate VBO (state)
@@ -34,8 +34,7 @@ SpriteRenderer::SpriteRenderer()
 
 	// Generate EBO (data)
 	unsigned int indices[] = {
-		0, 1, 2,
-		2, 3, 0,
+		0, 1, 2, 3,
 	};
 
 	// Generate EBO (state)
@@ -88,5 +87,5 @@ void SpriteRenderer::render(float pos_x, float pos_y)
 {
 	glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(pos_x, pos_y, 0.0f));
 	glUniformMatrix4fv(this->modelMatrixLocation, 1, GL_FALSE, glm::value_ptr(model));
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_INT, 0);
 }
