@@ -43,10 +43,9 @@ int main()
 	}
 
 	SpriteRenderer renderer;
-	renderer.createRenderable()->setPosition(1.0f, 1.0f);
-	renderer.createRenderable()->setPosition(3.0f, 2.0f);
-	Sprite *renderable = renderer.createRenderable();
-	renderable->load("image.png");
+	renderer.createRenderable()->load("image2.png")->setPosition(1.0f, 1.0f);
+	renderer.createRenderable()->load("image3.png")->setPosition(3.0f, 2.0f);
+	Sprite *renderable = renderer.createRenderable()->load("image.png");
 
 	glm::mat4 projection = glm::ortho(0.0f, 20.0f, 0.0f, 15.0f, 0.0f, 10.0f);
 	glm::mat4 view = glm::lookAt(

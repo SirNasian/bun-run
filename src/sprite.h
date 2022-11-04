@@ -17,6 +17,6 @@ class Sprite: public Renderable
 	public:
 		Sprite() {};
 		Sprite(const char *filepath) { load(filepath); };
-		void load(const char *filepath) { this->texture = texture_loader->load(filepath); };
+		Sprite* load(const char *filepath) { this->texture = texture_loader->load(filepath); return this; };
 		unsigned int getTexture() { return this->texture; };
 };

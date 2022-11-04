@@ -20,8 +20,9 @@ float Renderable::getPosY()
 	return this->pos_y;
 }
 
-void Renderable::setPosition(float pos_x, float pos_y)
+Renderable* Renderable::setPosition(float pos_x, float pos_y)
 {
 	this->pos_x = pos_x;
 	this->pos_y = pos_y;
+	return this;
 }
