@@ -24,6 +24,7 @@ class TextureLoader
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 			this->textures[filepath] = texture;
 
+			stbi_set_flip_vertically_on_load(true);
 			unsigned char *data = stbi_load(filepath, &width, &height, &channels, 4);
 			glBindTexture(GL_TEXTURE_2D, texture);
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
