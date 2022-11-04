@@ -2,7 +2,7 @@
 
 class Renderable
 {
-	private:
+	protected:
 		float pos_x;
 		float pos_y;
 	public:

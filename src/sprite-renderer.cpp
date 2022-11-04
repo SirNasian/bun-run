@@ -12,7 +12,6 @@ SpriteRenderer::SpriteRenderer()
 	this->modelMatrixLocation = glGetUniformLocation(this->shader, "v_model_matrix");
 	this->viewMatrixLocation = glGetUniformLocation(this->shader, "v_view_matrix");
 	this->projectionMatrixLocation = glGetUniformLocation(this->shader, "v_projection_matrix");
-	this->texture = 0;
 
 	// Set Default Uniforms
 	glUseProgram(this->shader);
@@ -97,9 +96,12 @@ const char* SpriteRenderer::getFragmentShaderSource()
 	)glsl";
 }
 
-void SpriteRenderer::render(float pos_x, float pos_y)
+void SpriteRenderer::render(Sprite *sprite)
 {
-	glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(pos_x, pos_y, 0.0f));
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, sprite->getTexture());
+	glUniform1i(glGetUniformLocation(this->shader, "f_texture"), 0);
+	glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(sprite->getPosX(), sprite->getPosY(), 0.0f));
 	glUniformMatrix4fv(this->modelMatrixLocation, 1, GL_FALSE, glm::value_ptr(model));
 	glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_INT, 0);
 }

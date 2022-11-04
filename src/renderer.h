@@ -8,19 +8,18 @@
 
 #include "renderable.h"
 
-template <typename T1>
+template <typename T>
 class Renderer
 {
 	protected:
 		GLuint vao;
 		GLuint shader;
-		GLuint texture;
 		GLint modelMatrixLocation, viewMatrixLocation, projectionMatrixLocation;
-		std::list<T1*> renderables;
+		std::list<T*> renderables;
 
 		virtual const char* getVertexShaderSource() { return ""; };
 		virtual const char* getFragmentShaderSource() { return ""; };
-		virtual void render(float pos_x, float pos_y) {};
+		virtual void render(T *renderable) {};
 
 		GLuint compileShader()
 		{
@@ -47,25 +46,25 @@ class Renderer
 		{
 			glBindVertexArray(this->vao);
 			glUseProgram(this->shader);
-			glBindTexture(GL_TEXTURE_2D, this->texture);
 			glUniformMatrix4fv(this->viewMatrixLocation, 1, GL_FALSE, glm::value_ptr(view));
 			glUniformMatrix4fv(this->projectionMatrixLocation, 1, GL_FALSE, glm::value_ptr(projection));
-			for (Renderable* renderable: this->renderables)
-				this->render(renderable->getPosX(), renderable->getPosY());
+			for (T *renderable: this->renderables)
+				this->render(renderable);
 		}
 
-		void addRenderable(Renderable *renderable)
+		void addRenderable(T *renderable)
 		{
 			this->renderables.push_back(renderable);
 		}
 
-		void removeRenderable(Renderable *renderable)
+		void removeRenderable(T *renderable)
 		{
 			this->renderables.remove(renderable);
 		}
-		template <typename T2> T2* createRenderable()
+
+		T* createRenderable()
 		{
-			T2 *renderable = new T2();
+			T *renderable = new T();
 			this->renderables.push_back(renderable);
 			return renderable;
 		}

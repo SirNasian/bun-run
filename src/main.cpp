@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -7,6 +8,9 @@
 
 #include "renderable.h"
 #include "sprite-renderer.h"
+
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb/stb_image.h>
 
 int main()
 {
@@ -39,9 +43,10 @@ int main()
 	}
 
 	SpriteRenderer renderer;
-	renderer.createRenderable<Renderable>()->setPosition(1.0f, 1.0f);
-	renderer.createRenderable<Renderable>()->setPosition(3.0f, 2.0f);
-	Renderable *renderable = renderer.createRenderable<Renderable>();
+	renderer.createRenderable()->setPosition(1.0f, 1.0f);
+	renderer.createRenderable()->setPosition(3.0f, 2.0f);
+	Sprite *renderable = renderer.createRenderable();
+	renderable->load("image.png");
 
 	glm::mat4 projection = glm::ortho(0.0f, 20.0f, 0.0f, 15.0f, 0.0f, 10.0f);
 	glm::mat4 view = glm::lookAt(

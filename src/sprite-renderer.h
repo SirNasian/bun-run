@@ -3,13 +3,14 @@
 #include <glm/glm.hpp>
 
 #include "renderer.h"
+#include "sprite.h"
 
-class SpriteRenderer: public Renderer<Renderable>
+class SpriteRenderer: public Renderer<Sprite>
 {
 	protected:
 		const char* getVertexShaderSource();
 		const char* getFragmentShaderSource();
-		void render(float pos_x, float pos_y);
+		void render(Sprite *sprite);
 	public:
 		SpriteRenderer();
 		using Renderer::render;
