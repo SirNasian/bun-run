@@ -8,8 +8,9 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include "renderable.h"
-#include "sprite-renderer.h"
+#include "Sprite.hpp"
+#include "SpriteRenderer.hpp"
+#include "Transformation.hpp"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb/stb_image.h>
@@ -45,10 +46,10 @@ int main()
 	{
 		GLFWwindow* window = setupContext();
 
-		SpriteRenderer renderer;
-		renderer.createRenderable()->load("image2.png")->setPosition(1.0f, 1.0f);
-		renderer.createRenderable()->load("image3.png")->setPosition(3.0f, 2.0f);
-		Sprite *renderable = renderer.createRenderable()->load("image.png");
+		std::list<bunrun::Sprite> sprites;
+		sprites.push_back(bunrun::Sprite("image2.png", bunrun::Transformation(1.0f, 1.0f)));
+		sprites.push_back(bunrun::Sprite("image3.png", bunrun::Transformation(3.0f, 2.0f)));
+		bunrun::Sprite cursor_sprite("image.png", bunrun::Transformation(0.0f, 0.0f, 45.0f));
 
 		glm::mat4 projection = glm::ortho(0.0f, 20.0f, 0.0f, 15.0f, 0.0f, 10.0f);
 		glm::mat4 view = glm::lookAt(
@@ -56,6 +57,10 @@ int main()
 			glm::vec3(0.0f, 0.0f, 0.0f),
 			glm::vec3(0.0f, 1.0f, 0.0f)
 		);
+
+		bunrun::SpriteRenderer renderer;
+		renderer.setProjectionMatrix(projection);
+		renderer.setViewMatrix(view);
 
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -68,9 +73,12 @@ int main()
 
 			double pos_x, pos_y;
 			glfwGetCursorPos(window, &pos_x, &pos_y);
+			cursor_sprite.transform.position.x = ((pos_x / 640.0f) * 20.0f);
+			cursor_sprite.transform.position.y = ((pos_y / 480.0f) * 15.0f * -1) + 15.0f;
 
-			renderable->setPosition(pos_x*(20.0f/640.0f), 15.0f-pos_y*(15.0f/480.0f));
-			renderer.render(view, projection);
+			renderer.render(cursor_sprite);
+			for (bunrun::Sprite& sprite : sprites)
+				renderer.render(sprite);
 
 			glfwSwapBuffers(window);
 			glfwPollEvents();
