@@ -49,7 +49,7 @@ int main()
 		std::list<bunrun::Sprite> sprites;
 		sprites.push_back(bunrun::Sprite("image2.png", bunrun::Transformation(1.0f, 1.0f)));
 		sprites.push_back(bunrun::Sprite("image3.png", bunrun::Transformation(3.0f, 2.0f)));
-		bunrun::Sprite cursor_sprite("image.png", bunrun::Transformation(0.0f, 0.0f, 45.0f));
+		bunrun::Sprite cursor_sprite("image.png", bunrun::Transformation(0.0f, 0.0f, 2.0f, 2.0f, 45.0f));
 
 		glm::mat4 projection = glm::ortho(0.0f, 20.0f, 0.0f, 15.0f, 0.0f, 10.0f);
 		glm::mat4 view = glm::lookAt(
@@ -76,9 +76,9 @@ int main()
 			cursor_sprite.transform.position.x = ((pos_x / 640.0f) * 20.0f);
 			cursor_sprite.transform.position.y = ((pos_y / 480.0f) * 15.0f * -1) + 15.0f;
 
-			renderer.render(cursor_sprite);
 			for (bunrun::Sprite& sprite : sprites)
 				renderer.render(sprite);
+			renderer.render(cursor_sprite);
 
 			glfwSwapBuffers(window);
 			glfwPollEvents();
