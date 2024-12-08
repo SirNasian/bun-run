@@ -3,4 +3,10 @@ extends Node2D
 var Player: PackedScene = preload("res://entities/player/player.tscn")
 
 func _ready() -> void:
-	self.add_child(Player.instantiate())
+	var player = Player.instantiate()
+	self.add_child(player)
+
+	var camera: Camera2D = Camera2D.new()
+	camera.zoom = Vector2(1.5, 1.5)
+	camera.position_smoothing_enabled = true
+	player.add_child(camera)
