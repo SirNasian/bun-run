@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://cfllmvh3o62wi"]
+[gd_scene load_steps=14 format=3 uid="uid://cfllmvh3o62wi"]
 
 [ext_resource type="Texture2D" uid="uid://ddtwqe6wpaone" path="res://entities/player/bunny-spritesheet.png" id="1_8shnw"]
 [ext_resource type="Script" path="res://entities/player/player.gd" id="1_vu5hx"]
@@ -77,6 +77,10 @@ animations = [{
 "speed": 12.0
 }]
 
+[sub_resource type="LabelSettings" id="LabelSettings_4xeg1"]
+outline_size = 2
+outline_color = Color(0, 0, 0, 1)
+
 [sub_resource type="CircleShape2D" id="CircleShape2D_c3r1r"]
 
 [node name="Player" type="CharacterBody2D"]
@@ -88,5 +92,27 @@ scale = Vector2(2, 2)
 sprite_frames = SubResource("SpriteFrames_y6m6k")
 animation = &"idle"
 
+[node name="Label" type="Label" parent="."]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -65.0
+offset_top = -34.0
+offset_right = 65.0
+offset_bottom = -11.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "0"
+label_settings = SubResource("LabelSettings_4xeg1")
+horizontal_alignment = 1
+vertical_alignment = 2
+
 [node name="CollisionPolygon2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_c3r1r")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+enabled = false
+zoom = Vector2(1.5, 1.5)
+position_smoothing_enabled = true
