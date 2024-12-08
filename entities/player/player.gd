@@ -1,6 +1,7 @@
 extends CharacterBody2D
 
 const COYOTE_TIME = 0.05
+const INPUT_BUFFER_TIME = 0.1
 const MAX_SPEED = 256
 const GRAVITY = 1024
 
@@ -25,13 +26,14 @@ func _input(event: InputEvent) -> void:
 	if (event.is_action_released("player_left")):  input.left  = 0
 	if (event.is_action_pressed("player_right")):  input.right = event.get_action_strength("player_right")
 	if (event.is_action_released("player_right")): input.right = 0
-	if (event.is_action_pressed("player_jump")):   input.jump  = 1
+	if (event.is_action_pressed("player_jump")):   input.jump  = self.INPUT_BUFFER_TIME
 
 func update_coyote_time(delta: float) -> void:
 	if (self.is_on_floor()):
 		self.can_jump = self.COYOTE_TIME
 	else:
 		self.can_jump = max(0, self.can_jump - delta)
+		self.input.jump = max(0, self.input.jump - delta)
 
 func update_velocity(input_x: float, delta: float) -> void:
 	self.velocity.x = lerp(self.velocity.x, input_x * self.MAX_SPEED, delta * (1 + (int(self.is_on_floor()) * 3)))
