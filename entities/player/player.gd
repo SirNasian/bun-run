@@ -22,9 +22,23 @@ static func instantiate(_id: int) -> Player:
 	return player
 
 
-@rpc("any_peer")
-func set_input(new_input: Dictionary) -> void:
+@rpc("any_peer", "call_local", "unreliable_ordered")
+func send_input(new_input: Dictionary) -> void:
 	self.input = new_input
+
+
+@rpc("reliable")
+func send_position(_position: Vector2, _velocity: Vector2) -> void:
+	self.position = Vector2(_position.x, _position.y)
+	self.velocity = _velocity
+
+
+func _ready() -> void:
+	var multiplayer_position_timer = Timer.new()
+	multiplayer_position_timer.timeout.connect(_multiplayer_position_timer_timeout)
+	self.add_child(multiplayer_position_timer)
+	if (self.multiplayer.is_server()):
+		multiplayer_position_timer.start(1)
 
 
 func _process(delta: float) -> void:
@@ -39,16 +53,23 @@ func _input(event: InputEvent) -> void:
 	if ((!event.is_action_type())): return
 	if (self.multiplayer_id != self.multiplayer.get_unique_id()): return
 
+	var new_input = self.input.duplicate()
+
 	if (event.is_action("player_left")):
-		self.input.left = event.get_action_strength("player_left") if (event.is_pressed()) else 0.0
+		new_input.left = event.get_action_strength("player_left") if (event.is_pressed()) else 0.0
 
 	if (event.is_action("player_right")):
-		self.input.right = event.get_action_strength("player_right") if (event.is_pressed()) else 0.0
+		new_input.right = event.get_action_strength("player_right") if (event.is_pressed()) else 0.0
 
 	if (event.is_action_pressed("player_jump")):
-		self.input.jump = self.INPUT_BUFFER_TIME
+		new_input.jump = self.INPUT_BUFFER_TIME
 
-	self.set_input.rpc(self.input)
+	if (self.input != new_input):
+		self.send_input.rpc(new_input)
+
+
+func _multiplayer_position_timer_timeout() -> void:
+	self.send_position.rpc(self.position, self.velocity)
 
 
 func update_coyote_time(delta: float) -> void:
