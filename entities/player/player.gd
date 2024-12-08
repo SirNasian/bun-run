@@ -37,10 +37,12 @@ func _input(event: InputEvent) -> void:
 	if (!self.is_multiplayer_authority()): return
 
 	if (event.is_action("player_left")):
-		self.input.left = event.get_action_strength("player_left") if (event.is_pressed()) else 0.0
+		var strength = event.get_action_strength("player_left")
+		self.input.left = strength if (strength > 0.2) else 0.0
 
 	if (event.is_action("player_right")):
-		self.input.right = event.get_action_strength("player_right") if (event.is_pressed()) else 0.0
+		var strength = event.get_action_strength("player_right")
+		self.input.right = strength if (strength > 0.2) else 0.0
 
 	if (event.is_action_pressed("player_jump")):
 		self.input.jump = self.INPUT_BUFFER_TIME
