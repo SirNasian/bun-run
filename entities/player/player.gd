@@ -31,6 +31,7 @@ func update_velocity(input_x: float, delta: float) -> void:
 		self.velocity.x = lerp(self.velocity.x, input_x * self.MAX_SPEED, delta * 4)
 	else:
 		self.velocity.y += self.GRAVITY * delta
+		self.velocity.x = lerp(self.velocity.x, input_x * self.MAX_SPEED, delta)
 
 func update_animation() -> void:
 	var sprite = $AnimatedSprite2D as AnimatedSprite2D
