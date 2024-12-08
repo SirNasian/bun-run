@@ -79,7 +79,8 @@ animations = [{
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_c3r1r"]
 
-[node name="Player" type="Node2D"]
+[node name="Player" type="CharacterBody2D"]
+collision_mask = 2
 script = ExtResource("1_vu5hx")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
@@ -87,8 +88,5 @@ scale = Vector2(2, 2)
 sprite_frames = SubResource("SpriteFrames_y6m6k")
 animation = &"idle"
 
-[node name="CharacterBody2D" type="CharacterBody2D" parent="."]
-collision_mask = 2
-
-[node name="CollisionPolygon2D" type="CollisionShape2D" parent="CharacterBody2D"]
+[node name="CollisionPolygon2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_c3r1r")
