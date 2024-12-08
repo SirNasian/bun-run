@@ -1,7 +1,5 @@
 extends Node2D
 
-var Player: PackedScene = preload("res://entities/player/player.tscn")
-
 func _ready() -> void:
 	var player = Player.instantiate()
 	self.add_child(player)

@@ -1,17 +1,20 @@
-extends CharacterBody2D
+class_name Player extends CharacterBody2D
 
 const COYOTE_TIME = 0.05
 const INPUT_BUFFER_TIME = 0.1
 const MAX_SPEED = 256
 const GRAVITY = 1024
 
-var input = {
+var input: Dictionary = {
 	"left": 0,
 	"right": 0,
 	"jump": 0,
 }
 
 var can_jump = self.COYOTE_TIME
+
+static func instantiate() -> Player:
+	return preload("res://entities/player/player.tscn").instantiate()
 
 func _process(delta: float) -> void:
 	var input_x = float(input.left + input.right)
