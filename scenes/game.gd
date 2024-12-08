@@ -1,9 +1,6 @@
 extends Node2D
 
 
-var player_ids = []
-
-
 func _ready() -> void:
 	var config = Configuration.load("config.json")
 
@@ -13,18 +10,28 @@ func _ready() -> void:
 	else:
 		peer.create_client(config.address, config.port)
 
+	self.multiplayer.server_disconnected.connect(_server_disconnected)
 	self.multiplayer.peer_connected.connect(_peer_connected)
+	self.multiplayer.peer_disconnected.connect(_peer_disconnected)
 	self.multiplayer.multiplayer_peer = peer
 
-	self.add_player(self.multiplayer.get_unique_id())
+	$PlayerSpawner.spawn_function = Player.instantiate
+	if (self.multiplayer.is_server()):
+		$PlayerSpawner.spawn(self.get_multiplayer_authority())
+
+
+func _server_disconnected() -> void:
+	print("server disconnect")
 
 
 func _peer_connected(id: int) -> void:
-	self.add_player(id)
+	if (self.is_multiplayer_authority()):
+		$PlayerSpawner.spawn(id)
 
 
-func add_player(id: int) -> void:
-	var player = Player.instantiate(id)
-	$Players.add_child(player)
-	player.name = str("player-", id)
-	player.get_node("Camera2D").enabled = player.is_multiplayer_authority()
+func _peer_disconnected(id: int) -> void:
+	if (self.is_multiplayer_authority()):
+		for player: Player in $Players.get_children():
+			if (player.get_multiplayer_authority() == id):
+				player.queue_free()
+				break

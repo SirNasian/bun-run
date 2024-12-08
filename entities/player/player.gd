@@ -14,12 +14,15 @@ var can_jump = self.COYOTE_TIME
 	"jump": 0.0,
 }
 
-static func instantiate(_id: int) -> Player:
+static func instantiate(id: int) -> Player:
 	var player = preload("res://entities/player/player.tscn").instantiate()
-	player.set_multiplayer_authority(_id)
-	player.name = str("player-", _id)
-	player.get_node("Label").text = str(_id)
+	player.set_multiplayer_authority(id)
+	player.name = str("player-", id)
+	player.get_node("Label").text = str(id)
 	return player
+
+func _ready() -> void:
+	$Camera2D.enabled = self.is_multiplayer_authority()
 
 func _process(delta: float) -> void:
 	var input_x = float(input.right - input.left)
