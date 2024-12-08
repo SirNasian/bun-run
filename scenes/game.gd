@@ -1,16 +1,20 @@
 extends Node2D
 
 
-func _ready() -> void:
-	var config = Configuration.load("config.json")
+var config = Configuration.load("config.json")
+var peer: ENetMultiplayerPeer
 
-	var peer = ENetMultiplayerPeer.new()
+
+func _ready() -> void:
+
+	self.peer = ENetMultiplayerPeer.new()
 	if (config.role == Configuration.ROLE_SERVER):
 		peer.create_server(config.port, config.max_clients)
 	else:
 		peer.create_client(config.address, config.port)
 
-	self.multiplayer.server_disconnected.connect(_server_disconnected)
+	self.multiplayer.connection_failed.connect(quit)
+	self.multiplayer.server_disconnected.connect(quit)
 	self.multiplayer.peer_connected.connect(_peer_connected)
 	self.multiplayer.peer_disconnected.connect(_peer_disconnected)
 	self.multiplayer.multiplayer_peer = peer
@@ -20,8 +24,8 @@ func _ready() -> void:
 		$PlayerSpawner.spawn(self.get_multiplayer_authority())
 
 
-func _server_disconnected() -> void:
-	print("server disconnect")
+func quit() -> void:
+	self.get_tree().quit()
 
 
 func _peer_connected(id: int) -> void:
