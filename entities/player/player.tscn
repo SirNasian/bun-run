@@ -1,7 +1,15 @@
-[gd_scene load_steps=14 format=3 uid="uid://cfllmvh3o62wi"]
+[gd_scene load_steps=15 format=3 uid="uid://cfllmvh3o62wi"]
 
 [ext_resource type="Texture2D" uid="uid://ddtwqe6wpaone" path="res://entities/player/bunny-spritesheet.png" id="1_8shnw"]
 [ext_resource type="Script" path="res://entities/player/player.gd" id="1_vu5hx"]
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_a4a2x"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:input")
+properties/1/spawn = true
+properties/1/replication_mode = 1
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_j46re"]
 atlas = ExtResource("1_8shnw")
@@ -86,6 +94,9 @@ outline_color = Color(0, 0, 0, 1)
 [node name="Player" type="CharacterBody2D"]
 collision_mask = 2
 script = ExtResource("1_vu5hx")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_a4a2x")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 scale = Vector2(2, 2)
