@@ -368,4 +368,5 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="ConnectionMenu" parent="CanvasLayer/CenterContainer" instance=ExtResource("3_gxpbq")]
+visible = false
 layout_mode = 2

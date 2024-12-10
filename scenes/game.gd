@@ -1,10 +1,18 @@
 extends Node2D
 
-var config = Configuration.load()
+@onready var config = Configuration.load()
 
 
 func _ready() -> void:
-	if (OS.has_feature("debug")): print_debug("config: %s" % self.config)
+	if (OS.has_feature("debug")):
+		print("config: %s" % config._config)
+
+	var config_issues = Configuration.validate(self.config)
+	if (config_issues):
+		push_error("configuration validation failed: %s" % config_issues)
+		self.get_tree().quit()
+		return
+
 	$PlayerSpawner.spawn_function = Player.instantiate
 
 	self.multiplayer.connection_failed.connect(_quit)
@@ -12,40 +20,54 @@ func _ready() -> void:
 	self.multiplayer.peer_connected.connect(_peer_connected)
 	self.multiplayer.peer_disconnected.connect(_peer_disconnected)
 
-	var connection_menu: ConnectionMenu = $CanvasLayer/CenterContainer/ConnectionMenu
-	connection_menu.host_server.connect(_host_server)
-	connection_menu.connect_server.connect(_connect_server)
+	if (config.is_server()):
+		self._host_server(config.get_server_bind_address(), config.get_server_port())
+	else:
+		self._connect_server(config.get_client_server_address(), config.get_client_port())
 
-	if ((Configuration.file_exists() && self.config.address) || OS.has_feature("dedicated_server")):
-		if (self.config.is_server):
-			self._host_server(self.config.address, self.config.port)
-		else:
-			self._connect_server(self.config.address, self.config.port)
+
+func _exit_tree() -> void:
+	config.free()
 
 
 func _host_server(address: String, port: int) -> void:
+	var tls = _get_server_tls("res://private.key", "res://certificate.crt")
+	if (!tls): tls = _get_server_tls(config.get_server_certificate_key_path(), config.get_server_certificate_path())
+	address = address if address else config.get_server_bind_address()
+	port = port if port else config.get_server_port()
+
 	var peer: WebSocketMultiplayerPeer = WebSocketMultiplayerPeer.new()
-	var use_ssl = config.use_ssl && ResourceLoader.exists("res://private.key") && ResourceLoader.exists("res://certificate.crt")
-	var tls_opt = TLSOptions.server(load("res://private.key"), load("res://certificate.crt")) if use_ssl else null
-	address = address if address else "*"
-	peer.create_server(port, address, tls_opt)
+	peer.create_server(port, address, tls)
 	self.multiplayer.multiplayer_peer = peer
-	self.hide_connection_menu()
+
 	if (!OS.has_feature("dedicated_server")):
 		$PlayerSpawner.spawn(self.get_multiplayer_authority())
-	if (OS.has_feature("debug")): print_debug("host: %s" % { "address": address, "port": port, "use_ssl": use_ssl })
+
+	if (OS.has_feature("debug")): print("host: %s" % { "address": address, "port": port, "tls": !!tls })
+
+
+func _get_server_tls(key_path: String, cert_path: String) -> TLSOptions:
+	var exists = ResourceLoader.exists(key_path) && ResourceLoader.exists(cert_path)
+	return TLSOptions.server(load(key_path), load(cert_path)) if (exists) else null
 
 
 func _connect_server(address: String, port: int) -> void:
+	var tls = _get_client_tls("res://certificate.crt")
+	if (!tls): tls = _get_client_tls(config.get_server_certificate_path())
+	var protocol = "wss" if (tls) else "ws"
+	address = address if address else config.get_client_server_address()
+	port = port if port else config.get_client_port()
+
 	var peer: WebSocketMultiplayerPeer = WebSocketMultiplayerPeer.new()
-	var protocol = "wss" if (config.use_ssl) else "ws"
-	var use_cert = config.use_ssl && ResourceLoader.exists("res://certificate.crt")
-	var tls_opt = TLSOptions.client(load("res://certificate.crt")) if (use_cert) else null
-	address = address if address else "localhost"
-	peer.create_client("%s://%s:%d" % [protocol, address, port], tls_opt)
+	peer.create_client("%s://%s:%d" % [protocol, address, port], tls)
 	self.multiplayer.multiplayer_peer = peer
-	self.hide_connection_menu()
-	if (OS.has_feature("debug")): print_debug("connect: %s" % { "protocol": protocol, "address": address, "port": port, "use_cert": use_cert })
+
+	if (OS.has_feature("debug")): print("connect: %s" % { "address": address, "port": port, "tls": tls })
+
+
+func _get_client_tls(cert_path: String) -> TLSOptions:
+	var exists = ResourceLoader.exists(cert_path)
+	return TLSOptions.client(load(cert_path)) if (exists) else null
 
 
 func hide_connection_menu() -> void:
