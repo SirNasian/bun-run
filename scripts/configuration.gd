@@ -37,11 +37,13 @@ static func save(config: Configuration) -> void:
 	file.store_line(JSON.stringify(config._config, "\t", false))
 	file.close()
 
+
 static func validate(config: Configuration) -> Dictionary:
 	return Utils.validate_dictionary(config._config, CONFIG_SCHEMA, "config")
 
+
 func is_server() -> bool:
-	return _config.get("role") == "server"
+	return _config.get("role") == "server" && !OS.has_feature("web")
 
 
 func get_server_bind_address() -> String:
