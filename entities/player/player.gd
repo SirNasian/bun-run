@@ -1,6 +1,5 @@
 class_name Player extends CharacterBody2D
 
-
 const COYOTE_TIME = 0.05
 const INPUT_BUFFER_TIME = 0.1
 const MAX_SPEED = 256
@@ -8,11 +7,12 @@ const GRAVITY = 1024
 
 var can_jump = self.COYOTE_TIME
 
-@export var input: Dictionary = {
+var input: Dictionary = {
 	"left": 0.0,
 	"right": 0.0,
 	"jump": 0.0,
 }
+
 
 static func instantiate(id: int) -> Player:
 	var player = preload("res://entities/player/player.tscn").instantiate()
@@ -21,8 +21,10 @@ static func instantiate(id: int) -> Player:
 	player.get_node("Label").text = str(id)
 	return player
 
+
 func _ready() -> void:
 	$Camera2D.enabled = self.is_multiplayer_authority()
+
 
 func _process(delta: float) -> void:
 	var input_x = float(input.right - input.left)
@@ -46,6 +48,26 @@ func _input(event: InputEvent) -> void:
 
 	if (event.is_action_pressed("player_jump")):
 		self.input.jump = self.INPUT_BUFFER_TIME
+
+	self.sync_input.rpc(self.input)
+
+
+func _kinematics_sync() -> void:
+	if (self.is_multiplayer_authority()):
+		self.sync_kinematics.rpc(self.position, self.velocity)
+		self.sync_input.rpc(self.input)
+
+
+@rpc("reliable")
+func sync_input(updated_input: Dictionary) -> void:
+	self.input = updated_input
+
+
+@rpc("unreliable_ordered")
+func sync_kinematics(updated_position: Vector2, updated_velocity: Vector2):
+	self.position = updated_position
+	self.velocity = updated_velocity
+
 
 func update_coyote_time(delta: float) -> void:
 	if (self.is_on_floor()):
