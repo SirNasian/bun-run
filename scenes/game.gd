@@ -1,6 +1,7 @@
 extends Node2D
 
 @onready var config = Configuration.load()
+var players = {}
 
 
 func _ready() -> void:
@@ -15,7 +16,8 @@ func _ready() -> void:
 
 	Configuration.save(config)
 
-	$PlayerSpawner.spawn_function = Player.instantiate
+	$World/PlayerSpawner.spawn_function = Player.instantiate
+	$World/GoombaSpawner.spawn_function = Goomba.instantiate
 
 	self.multiplayer.connection_failed.connect(_connection_failed)
 	self.multiplayer.connected_to_server.connect(_server_connected)
@@ -25,6 +27,8 @@ func _ready() -> void:
 
 	if (config.is_server()):
 		self.host_server(config.get_server_bind_address(), config.get_server_port())
+		for i in range(1, 8):
+			$World/GoombaSpawner.spawn({}).position.x += i * 32
 	else:
 		self.connect_server(config.get_client_server_address(), config.get_client_port())
 
@@ -44,16 +48,14 @@ func _server_disconnected() -> void:
 func _peer_connected(id: int) -> void:
 	print("player connected (%d)" % id)
 	if (self.is_multiplayer_authority()):
-		$PlayerSpawner.spawn(id)
+		self.players[id] = $World/PlayerSpawner.spawn(id)
 
 
 func _peer_disconnected(id: int) -> void:
 	print("player disconnected (%d)" % id)
 	if (self.is_multiplayer_authority()):
-		for player: Player in $World/Players.get_children():
-			if (player.get_multiplayer_authority() == id):
-				player.queue_free()
-				break
+		self.players[id].queue_free()
+		self.players.erase(id)
 
 func host_server(address: String, port: int) -> void:
 	var get_tls = func (paths: Array) -> TLSOptions:
@@ -76,7 +78,7 @@ func host_server(address: String, port: int) -> void:
 	self.multiplayer.multiplayer_peer = peer
 
 	if (!OS.has_feature("dedicated_server")):
-		$PlayerSpawner.spawn(self.get_multiplayer_authority())
+		$World/PlayerSpawner.spawn(self.get_multiplayer_authority())
 
 	print("hosting: %s" % { "address": address, "port": port, "tls": !!tls_options })
 

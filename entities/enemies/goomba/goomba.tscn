@@ -1,0 +1,66 @@
+[gd_scene load_steps=8 format=3 uid="uid://hcqgi51ddqkr"]
+
+[ext_resource type="Texture2D" uid="uid://11lqsvbqka3a" path="res://entities/enemies/mario-enemies.png" id="1_dqcib"]
+[ext_resource type="Script" path="res://entities/enemies/goomba/goomba.gd" id="1_wpir3"]
+[ext_resource type="Shape2D" uid="uid://cbagsw7gwug3s" path="res://entities/enemies/goomba/hitbox.tres" id="2_5xffq"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gi4r4"]
+atlas = ExtResource("1_dqcib")
+region = Rect2(36, 16, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_awmx8"]
+atlas = ExtResource("1_dqcib")
+region = Rect2(0, 16, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_x8n34"]
+atlas = ExtResource("1_dqcib")
+region = Rect2(18, 16, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_gnma0"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gi4r4")
+}],
+"loop": true,
+"name": &"die",
+"speed": 0.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_awmx8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_x8n34")
+}],
+"loop": true,
+"name": &"walk",
+"speed": 4.0
+}]
+
+[node name="Goomba" type="CharacterBody2D"]
+collision_layer = 8
+collision_mask = 2
+script = ExtResource("1_wpir3")
+
+[node name="Sync" type="Node" parent="."]
+
+[node name="StateTimer" type="Timer" parent="Sync"]
+wait_time = 0.2
+autostart = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = ExtResource("2_5xffq")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+scale = Vector2(1.25, 1.25)
+sprite_frames = SubResource("SpriteFrames_gnma0")
+animation = &"walk"
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = ExtResource("2_5xffq")
+
+[connection signal="timeout" from="Sync/StateTimer" to="." method="_on_state_sync"]
+[connection signal="body_entered" from="Area2D" to="." method="_on_body_entered"]

@@ -1,9 +1,9 @@
 class_name Player extends CharacterBody2D
 
+
 const COYOTE_TIME = 0.05
 const INPUT_BUFFER_TIME = 0.1
-const MAX_SPEED = 256
-const GRAVITY = 1024
+const MAX_SPEED = 256.0
 
 var can_jump = self.COYOTE_TIME
 
@@ -27,10 +27,12 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
-	var input_x = float(input.right - input.left)
 	self.update_coyote_time(delta)
-	self.update_velocity(input_x, delta)
 	self.update_animation()
+
+
+func _physics_process(delta: float) -> void:
+	self.update_velocity(input.right - input.left, delta)
 	self.move_and_slide()
 
 
@@ -84,7 +86,7 @@ func update_velocity(input_x: float, delta: float) -> void:
 		self.can_jump = 0
 		self.velocity.y = -256
 	if (!self.is_on_floor()):
-		self.velocity.y += self.GRAVITY * delta
+		self.velocity += self.get_gravity() * delta
 
 
 func update_animation() -> void:
