@@ -15,7 +15,7 @@ const CONFIG_SCHEMA = {
 	},
 }
 
-static var LOCAL_CONFIG_PATH = "user://config.json" if (OS.has_feature("web")) else "./config.json"
+static var CONFIG_PATH = "./config.json"
 var _config: Dictionary = {}
 
 
@@ -27,19 +27,29 @@ static func load() -> Configuration:
 		return json
 
 	var config = Configuration.new()
-	Utils.recursive_merge(config._config, load_json.call(LOCAL_CONFIG_PATH))
+	Utils.recursive_merge(config._config, load_json.call(CONFIG_PATH))
+	Utils.recursive_merge(config._config, load_json.call("user://config.json"))
 	Utils.recursive_merge(config._config, load_json.call("res://config.json"))
 	return config
 
 
 static func save(config: Configuration) -> void:
-	var file = FileAccess.open(LOCAL_CONFIG_PATH, FileAccess.WRITE)
-	file.store_line(JSON.stringify(config._config, "\t", false))
-	file.close()
+	var file = FileAccess.open(CONFIG_PATH, FileAccess.WRITE)
+	if (file):
+		file.store_line(JSON.stringify(config._config, "\t", false))
+		file.close()
 
 
 static func validate(config: Configuration) -> Dictionary:
 	return Utils.validate_dictionary(config._config, CONFIG_SCHEMA, "config")
+
+
+static func get_paths() -> Dictionary:
+	var paths = {}
+	for path in [CONFIG_PATH, "user://config.json"]:
+		path = ProjectSettings.globalize_path(path)
+		paths[path] = ResourceLoader.exists(path)
+	return paths
 
 
 func is_server() -> bool:
