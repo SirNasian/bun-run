@@ -27,8 +27,8 @@ static func load() -> Configuration:
 		return json
 
 	var config = Configuration.new()
-	config._config.merge(load_json.call(LOCAL_CONFIG_PATH))
-	config._config.merge(load_json.call("res://config.json"))
+	Utils.recursive_merge(config._config, load_json.call(LOCAL_CONFIG_PATH))
+	Utils.recursive_merge(config._config, load_json.call("res://config.json"))
 	return config
 
 

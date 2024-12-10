@@ -18,3 +18,11 @@ static func validate_dictionary(dictionary: Dictionary, schema: Dictionary, path
 		elif (schema.has(key) && (type != schema[key])):
 			issues[key_path] = "expected [%s] but got [%s]" % [variant_type_name[schema[key]], variant_type_name[type]]
 	return issues
+
+
+static func recursive_merge(a: Dictionary, b: Dictionary, overwrite: bool = false) -> void:
+	for key in b:
+		if (a.has(key) && (a[key] is Dictionary) && (b[key] is Dictionary)):
+			Utils.recursive_merge(a[key], b[key])
+		elif (!a.has(key) || overwrite):
+			a[key] = b[key]
