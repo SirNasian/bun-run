@@ -53,7 +53,7 @@ static func get_paths() -> Dictionary:
 
 
 func is_server() -> bool:
-	return _config.get("role") == "server" && !OS.has_feature("web")
+	return OS.has_feature("dedicated_server") || ((_config.get("role") == "server") && !OS.has_feature("web"))
 
 
 func get_server_bind_address() -> String:
