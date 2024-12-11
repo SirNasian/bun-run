@@ -4,6 +4,8 @@ class_name Game extends Node2D
 const SYNC_TIME: float = 0.2
 
 @onready var config: Configuration = Configuration.load()
+var heartbeats: Dictionary = {}
+var heartbeat_timer: Timer = null
 var players: Dictionary = {}
 var goomba_spawn_timer: float = 0.0
 
@@ -52,6 +54,7 @@ func _server_connected() -> void:
 
 
 func _server_disconnected() -> void:
+	heartbeat_timer.queue_free()
 	print("disconnected from server")
 
 
@@ -59,6 +62,7 @@ func _peer_connected(id: int) -> void:
 	print("player connected (%d)" % id)
 	if (is_multiplayer_authority()):
 		players[id] = $World/PlayerSpawner.spawn(id)
+		heartbeats[id] = Time.get_ticks_msec()
 
 
 func _peer_disconnected(id: int) -> void:
@@ -66,6 +70,22 @@ func _peer_disconnected(id: int) -> void:
 	if (is_multiplayer_authority()):
 		players[id].queue_free()
 		players.erase(id)
+
+
+func _on_heartbeat_sync_timer() -> void:
+	if (is_multiplayer_authority()):
+		for id in multiplayer.get_peers():
+			if ((id > 1) && ((Time.get_ticks_msec() - heartbeats[id]) > (SYNC_TIME * 1000 * 10))):
+				multiplayer.multiplayer_peer.disconnect_peer(id)
+	else:
+		sync_heartbeat.rpc_id(1, multiplayer.get_unique_id())
+
+
+@rpc("any_peer", "unreliable_ordered")
+func sync_heartbeat(id: int) -> void:
+	if (is_multiplayer_authority()):
+		heartbeats[id] = Time.get_ticks_msec()
+
 
 func host_server(address: String, port: int) -> void:
 	var get_tls = func (paths: Array) -> TLSOptions:
@@ -90,6 +110,7 @@ func host_server(address: String, port: int) -> void:
 	if (!OS.has_feature("dedicated_server")):
 		$World/PlayerSpawner.spawn(get_multiplayer_authority())
 
+	heartbeat_timer = Utils.create_sync_timer(self, _on_heartbeat_sync_timer)
 	print("hosting: %s" % { "address": address, "port": port, "tls": !!tls_options })
 
 
@@ -114,4 +135,5 @@ func connect_server(address: String, port: int) -> void:
 	peer.create_client("%s://%s:%d" % [protocol, address, port], tls_options)
 	multiplayer.multiplayer_peer = peer
 
+	heartbeat_timer = Utils.create_sync_timer(self, _on_heartbeat_sync_timer)
 	print("connecting: %s" % { "address": address, "port": port, "tls": !!tls_options })
