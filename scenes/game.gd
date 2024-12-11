@@ -2,6 +2,7 @@ extends Node2D
 
 @onready var config = Configuration.load()
 var players = {}
+var spawn_timer = 0.0
 
 
 func _ready() -> void:
@@ -27,10 +28,16 @@ func _ready() -> void:
 
 	if (config.is_server()):
 		self.host_server(config.get_server_bind_address(), config.get_server_port())
-		for i in range(1, 8):
-			$World/GoombaSpawner.spawn({}).position.x += i * 32
 	else:
 		self.connect_server(config.get_client_server_address(), config.get_client_port())
+
+
+func _process(delta: float):
+	if (self.is_multiplayer_authority()):
+		spawn_timer -= delta
+		if (spawn_timer < 0.0):
+			spawn_timer = 3.0
+			$World/GoombaSpawner.spawn({})
 
 
 func _connection_failed() -> void:
