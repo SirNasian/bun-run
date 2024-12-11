@@ -22,6 +22,7 @@ static func instantiate(id: int) -> Player:
 func _ready() -> void:
 	Utils.create_sync_timer(self, _on_kinematics_sync_timer)
 	$Camera2D.enabled = self.is_multiplayer_authority()
+	$Camera2D.make_current()
 
 
 func _process(delta: float) -> void:
