@@ -50,6 +50,7 @@ func _connection_failed() -> void:
 
 
 func _server_connected() -> void:
+	heartbeat_timer = Utils.create_sync_timer(self, _on_heartbeat_sync_timer)
 	print("connected to server")
 
 
@@ -135,5 +136,4 @@ func connect_server(address: String, port: int) -> void:
 	peer.create_client("%s://%s:%d" % [protocol, address, port], tls_options)
 	multiplayer.multiplayer_peer = peer
 
-	heartbeat_timer = Utils.create_sync_timer(self, _on_heartbeat_sync_timer)
 	print("connecting: %s" % { "address": address, "port": port, "tls": !!tls_options })
