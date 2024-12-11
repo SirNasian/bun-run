@@ -7,7 +7,7 @@ var death_timer: float = 1.0
 var direction: int = 1
 
 
-static func instantiate(_data: Dictionary) -> Goomba:
+static func instantiate() -> Goomba:
 	return preload("res://entities/enemies/goomba/goomba.tscn").instantiate()
 
 
@@ -17,7 +17,7 @@ func _ready() -> void:
 
 
 func _process(_delta) -> void:
-	if (!alive && is_multiplayer_authority()):
+	if (!alive):
 		death_timer -= _delta
 		if (death_timer < 0.0):
 			queue_free()
