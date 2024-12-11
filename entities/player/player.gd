@@ -20,6 +20,7 @@ static func instantiate(id: int) -> Player:
 
 
 func _ready() -> void:
+	Utils.create_sync_timer(self, _on_kinematics_sync_timer)
 	$Camera2D.enabled = self.is_multiplayer_authority()
 
 
@@ -51,7 +52,7 @@ func _input(event: InputEvent) -> void:
 	self.sync_input.rpc(self.input)
 
 
-func _kinematics_sync() -> void:
+func _on_kinematics_sync_timer() -> void:
 	if (self.is_multiplayer_authority()):
 		self.sync_kinematics.rpc(self.position, self.velocity)
 		self.sync_input.rpc(self.input)

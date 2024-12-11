@@ -12,6 +12,7 @@ static func instantiate(_data: Dictionary) -> Goomba:
 
 
 func _ready() -> void:
+	Utils.create_sync_timer(self, _on_state_sync_timer)
 	$AnimatedSprite2D.play("walk")
 
 
@@ -47,7 +48,7 @@ func _on_body_entered(body: Node2D) -> void:
 			sync_alive.rpc(false)
 
 
-func _on_state_sync() -> void:
+func _on_state_sync_timer() -> void:
 	if (is_multiplayer_authority()):
 		sync_kinematics.rpc(position, velocity, direction)
 

@@ -87,12 +87,6 @@ outline_color = Color(0, 0, 0, 1)
 collision_mask = 2
 script = ExtResource("1_vu5hx")
 
-[node name="Sync" type="Node" parent="."]
-
-[node name="KinematicsTimer" type="Timer" parent="Sync"]
-wait_time = 0.2
-autostart = true
-
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 scale = Vector2(2, 2)
 sprite_frames = SubResource("SpriteFrames_y6m6k")
@@ -124,5 +118,3 @@ enabled = false
 zoom = Vector2(1.5, 1.5)
 process_callback = 0
 position_smoothing_enabled = true
-
-[connection signal="timeout" from="Sync/KinematicsTimer" to="." method="_kinematics_sync"]

@@ -43,12 +43,6 @@ collision_layer = 8
 collision_mask = 2
 script = ExtResource("1_wpir3")
 
-[node name="Sync" type="Node" parent="."]
-
-[node name="StateTimer" type="Timer" parent="Sync"]
-wait_time = 0.2
-autostart = true
-
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = ExtResource("2_5xffq")
 
@@ -62,5 +56,4 @@ animation = &"walk"
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
 shape = ExtResource("2_5xffq")
 
-[connection signal="timeout" from="Sync/StateTimer" to="." method="_on_state_sync"]
 [connection signal="body_entered" from="Area2D" to="." method="_on_body_entered"]
