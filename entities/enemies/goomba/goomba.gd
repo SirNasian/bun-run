@@ -40,7 +40,7 @@ func deserialize(data: Array) -> Goomba:
 
 
 func _ready() -> void:
-	Utils.create_sync_timer(self, _on_state_sync_timer)
+	Game.instance.sync.connect(_on_sync)
 	$AnimatedSprite2D.play("walk")
 
 
@@ -71,13 +71,13 @@ func _on_body_entered(body: Node2D) -> void:
 	var player = body as Player
 	if (alive && player && (player.velocity.y > 0)):
 		player.velocity.y = -256.0
-		if (body.is_multiplayer_authority()):
+		if (player.is_multiplayer_authority()):
 			player.sync_kinematics(player.position, player.velocity)
 			sync_alive.rpc(false)
 
 
-func _on_state_sync_timer() -> void:
-	if (is_multiplayer_authority()):
+func _on_sync() -> void:
+	if (is_multiplayer_authority() && alive):
 		sync_kinematics.rpc(position, velocity, direction)
 
 

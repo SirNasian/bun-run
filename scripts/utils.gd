@@ -1,5 +1,6 @@
 class_name Utils extends Object
 
+
 const variant_type_name = {
 	TYPE_INT: "int",
 	TYPE_FLOAT: "float",
@@ -26,14 +27,3 @@ static func recursive_merge(a: Dictionary, b: Dictionary, overwrite: bool = fals
 			Utils.recursive_merge(a[key], b[key])
 		elif (!a.has(key) || overwrite):
 			a[key] = b[key]
-
-static func create_timer(parent: Node, on_timeout: Callable, wait_time: float = 1.0, start: bool = true) -> Timer:
-	var timer: Timer = Timer.new()
-	timer.timeout.connect(on_timeout)
-	timer.wait_time = wait_time
-	parent.add_child(timer)
-	if (start): timer.start()
-	return timer
-
-static func create_sync_timer(parent: Node, on_timeout: Callable, wait_time: float = Game.SYNC_TIME, start: bool = true) -> Timer:
-	return Utils.create_timer(parent, on_timeout, wait_time, start)

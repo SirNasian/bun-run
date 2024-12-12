@@ -1,16 +1,21 @@
 class_name Game extends Node2D
 
 
-const SYNC_TIME: float = 0.2
+signal sync
 
+static var instance: Game = null
+
+@export var sync_interval: float = 0.2
 @onready var config: Configuration = Configuration.load()
+var last_sync: float = 0.0
 var heartbeats: Dictionary = {}
-var heartbeat_timer: Timer = null
 var world_path: String = "res://scenes/worlds/developer/developer.tscn"
 var world: Node2D = null
 
 
 func _ready() -> void:
+	instance = self
+
 	print("configuration paths: %s" % Configuration.get_paths())
 	print("configuration loaded: %s" % config._config)
 
@@ -40,35 +45,42 @@ func _input(event: InputEvent) -> void:
 			sync_world.rpc(world_path, sync_world(world_path).name)
 
 
+func _process(_delta: float) -> void:
+	if ((Time.get_ticks_msec() - last_sync) > sync_interval):
+		last_sync = Time.get_ticks_msec()
+		sync.emit()
+
+
 func _connection_failed() -> void:
 	print("failed to connect to server")
 
 
 func _server_connected() -> void:
-	heartbeat_timer = Utils.create_sync_timer(self, _on_heartbeat_sync_timer)
+	sync.connect(_on_heartbeat)
 	print("connected to server")
 
 
 func _server_disconnected() -> void:
-	heartbeat_timer.queue_free()
+	if (sync.is_connected(_on_heartbeat)):
+		sync.disconnect(_on_heartbeat)
 	print("disconnected from server")
 
 
 func _on_peer_connected(id: int) -> void:
-	print("peer connected (%d)" % id)
+	print("peer connected: ", id)
 	if (is_multiplayer_authority()):
 		sync_world.rpc_id(id, world_path, world.name)
 		heartbeats[id] = Time.get_ticks_msec()
 
 
 func _on_peer_disconnected(id: int) -> void:
-	print("peer disconnected (%d)" % id)
+	print("peer disconnected: ", id)
 
 
-func _on_heartbeat_sync_timer() -> void:
+func _on_heartbeat() -> void:
 	if (is_multiplayer_authority()):
 		for id in multiplayer.get_peers():
-			if ((id > 1) && ((Time.get_ticks_msec() - heartbeats[id]) > (SYNC_TIME * 1000 * 10))):
+			if ((id > 1) && ((Time.get_ticks_msec() - heartbeats[id]) > (sync_interval * 1000 * 10))):
 				multiplayer.multiplayer_peer.disconnect_peer(id)
 	else:
 		sync_heartbeat.rpc_id(1, multiplayer.get_unique_id())
@@ -109,8 +121,8 @@ func host_server(address: String, port: int, _world_path: String = world_path) -
 	peer.create_server(port, address, tls_options)
 	multiplayer.multiplayer_peer = peer
 
-	heartbeat_timer = Utils.create_sync_timer(self, _on_heartbeat_sync_timer)
 	sync_world(_world_path)
+	sync.connect(_on_heartbeat)
 	print("hosting: %s" % { "address": address, "port": port, "tls": !!tls_options })
 
 
