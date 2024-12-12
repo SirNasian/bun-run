@@ -1,22 +1,44 @@
 class_name Player extends CharacterBody2D
 
-
 const COYOTE_TIME: float = 0.05
 const INPUT_BUFFER_TIME: float = 0.1
 const MAX_SPEED: float = 256.0
 
-var can_jump: float = self.COYOTE_TIME
-
-var input: Array = [ 0.0, 0.0, 0.0 ];
 enum INPUT { LEFT, RIGHT, JUMP }
+static var ID: int = 0
 
+var id: int = 0
+var can_jump: float = self.COYOTE_TIME
+var input: Array = [ 0.0, 0.0, 0.0 ];
 
-static func instantiate(id: int) -> Player:
+static func instantiate() -> Player:
 	var player = preload("res://entities/player/player.tscn").instantiate()
-	player.set_multiplayer_authority(id)
-	player.name = str("player-", id)
-	player.get_node("Label").text = str(id)
+	ID += 1
+	player.id = ID
+	player.name = "Player-%d" % ID
 	return player
+
+
+func serialize() -> Array:
+	return [
+		id,
+		get_multiplayer_authority(),
+		position,
+		velocity,
+		can_jump,
+		input,
+	]
+
+
+func deserialize(data: Array) -> Player:
+	id = data[0]
+	name = "Player-%d" % data[0]
+	set_multiplayer_authority(data[1])
+	position = data[2]
+	velocity = data[3]
+	can_jump = data[4]
+	input = data[5]
+	return self
 
 
 func _ready() -> void:

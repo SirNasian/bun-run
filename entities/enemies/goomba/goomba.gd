@@ -2,13 +2,41 @@ class_name Goomba extends CharacterBody2D
 
 
 const MAX_SPEED: float = 128.0
+
+static var ID: int = 0
+
+var id: int = 0
 var alive: bool = true
 var death_timer: float = 1.0
 var direction: int = 1
 
 
 static func instantiate() -> Goomba:
-	return preload("res://entities/enemies/goomba/goomba.tscn").instantiate()
+	var goomba = preload("res://entities/enemies/goomba/goomba.tscn").instantiate()
+	ID += 1
+	goomba.id = ID
+	goomba.name = "Goomba-%d" % ID
+	return goomba
+
+
+func serialize() -> Array:
+	return [
+		id,
+		position,
+		velocity,
+		direction,
+		alive,
+	]
+
+
+func deserialize(data: Array) -> Goomba:
+	id = data[0]
+	name = "Goomba-%d" % data[0]
+	position = data[1]
+	velocity = data[2]
+	direction = data[3]
+	alive = data[4]
+	return self
 
 
 func _ready() -> void:
