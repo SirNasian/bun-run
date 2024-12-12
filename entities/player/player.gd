@@ -43,8 +43,9 @@ func deserialize(data: Array) -> Player:
 
 func _ready() -> void:
 	Game.instance.sync.connect(_on_sync)
-	$Camera2D.enabled = is_multiplayer_authority()
-	$Camera2D.make_current()
+	if (is_multiplayer_authority()):
+		$Camera2D.enabled = true
+		$Camera2D.make_current()
 
 
 func _process(delta: float) -> void:
