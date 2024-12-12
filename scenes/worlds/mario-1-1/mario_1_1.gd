@@ -1,4 +1,4 @@
-class_name DeveloperWorld extends Node2D
+extends Node2D
 
 
 enum ENTITY {
@@ -7,7 +7,6 @@ enum ENTITY {
 }
 
 var players: Dictionary = {}
-var goomba_spawn_timer: float = 1.0
 
 
 func _ready() -> void:
@@ -16,18 +15,9 @@ func _ready() -> void:
 		if (!OS.has_feature("dedicated_server")):
 			var player = create_player(get_multiplayer_authority())
 			spawn.rpc(get_path(), player.serialize() + [ENTITY.PLAYER])
+			set_camera_limits.rpc(player.get_node("Camera2D").get_path())
 	else:
 		_on_client_world_load.rpc_id(get_multiplayer_authority(), multiplayer.get_unique_id())
-
-
-func _process(delta: float):
-	if (is_multiplayer_authority()):
-		goomba_spawn_timer -= delta
-		if (goomba_spawn_timer < 0.0):
-			goomba_spawn_timer = 3.0
-			var goomba = Goomba.instantiate()
-			add_child(goomba, true)
-			spawn.rpc(get_path(), goomba.serialize() + [ENTITY.GOOMBA])
 
 
 @rpc("any_peer")
@@ -41,6 +31,7 @@ func _on_client_world_load(id: int) -> void:
 			nodes.append_array(node.get_children())
 		players[id] = create_player(id)
 		spawn.rpc(get_path(), players[id].serialize() + [ENTITY.PLAYER])
+		set_camera_limits.rpc(players[id].get_node("Camera2D").get_path())
 
 
 func _on_peer_disconnected(id: int) -> void:
@@ -52,9 +43,19 @@ func _on_peer_disconnected(id: int) -> void:
 func create_player(authority: int) -> Player:
 	var player = Player.instantiate()
 	player.set_multiplayer_authority(authority)
-	player.jump_force = 288.0
+	player.position = $PlayerSpawn.position
+	player.jump_force = 448.0
 	add_child(player, true)
 	return player
+
+
+@rpc("call_local")
+func set_camera_limits(path: String) -> void:
+	var camera = get_node(path) as Camera2D
+	camera.limit_top = -180
+	camera.limit_bottom = 180
+	camera.limit_left = -2532
+	camera.limit_right = 2532
 
 
 @rpc

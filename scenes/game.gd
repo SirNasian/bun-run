@@ -41,7 +41,15 @@ func _ready() -> void:
 
 func _input(event: InputEvent) -> void:
 	if (is_multiplayer_authority() && (event is InputEventKey) && event.is_pressed()):
-		if ((event as InputEventKey).keycode == 4194308):
+		if ((event as InputEventKey).keycode == KEY_DELETE):
+			sync_world.rpc(world_path, sync_world(world_path).name)
+
+		if ((event as InputEventKey).keycode == KEY_1):
+			world_path = "res://scenes/worlds/developer/developer.tscn"
+			sync_world.rpc(world_path, sync_world(world_path).name)
+
+		if ((event as InputEventKey).keycode == KEY_2):
+			world_path = "res://scenes/worlds/mario-1-1/mario-1-1.tscn"
 			sync_world.rpc(world_path, sync_world(world_path).name)
 
 

@@ -1,0 +1,158 @@
+[gd_scene load_steps=3 format=3 uid="uid://betck6arrbn38"]
+
+[ext_resource type="Script" path="res://scenes/worlds/mario-1-1/mario_1_1.gd" id="1_c2vlu"]
+[ext_resource type="Texture2D" uid="uid://bmyoe0hxl1l2" path="res://scenes/worlds/mario-1-1/stage.png" id="1_gngjv"]
+
+[node name="World" type="Node2D"]
+script = ExtResource("1_c2vlu")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(1.5, 1.5)
+texture = ExtResource("1_gngjv")
+region_enabled = true
+region_rect = Rect2(0, 0, 3376, 240)
+
+[node name="RigidBody2D" type="RigidBody2D" parent="Sprite2D"]
+position = Vector2(0, 120)
+collision_layer = 2
+collision_mask = 13
+freeze = true
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Sprite2D/RigidBody2D"]
+polygon = PackedVector2Array(-1688, -32, -584, -32, -584, 0, -1688, 0)
+
+[node name="CollisionPolygon2D34" type="CollisionPolygon2D" parent="Sprite2D/RigidBody2D"]
+position = Vector2(-0.666666, 0)
+polygon = PackedVector2Array(-1687, -240, -1687, -32, -1703.33, -32, -1703.33, -240)
+
+[node name="CollisionPolygon2D35" type="CollisionPolygon2D" parent="Sprite2D/RigidBody2D"]
+position = Vector2(3391.33, 0)
+polygon = PackedVector2Array(-1687, -240, -1687, -32, -1703.33, -32, -1703.33, -240)
+
+[node name="CollisionPolygon2D33" type="CollisionPolygon2D" parent="Sprite2D/RigidBody2D"]
+polygon = PackedVector2Array(1480, -48, 1496, -48, 1496, -32, 1480, -32)
+
+[node name="CollisionPolygon2D25" type="CollisionPolygon2D" parent="Sprite2D/RigidBody2D"]
+position = Vector2(1424, 0)
+polygon = PackedVector2Array(-1688, -32, -664, -32, -664, 0, -1688, 0)
+
+[node name="CollisionPolygon2D26" type="CollisionPolygon2D" parent="Sprite2D/RigidBody2D"]
+position = Vector2(2480, -7.15256e-07)
+polygon = PackedVector2Array(-1688, -32, -664, -32, -664, 0, -1688, 0)
+
+[node name="CollisionPolygon2D27" type="CollisionPolygon2D" parent="Sprite2D/RigidBody2D"]
+position = Vector2(2480, -7.15256e-07)
+polygon = PackedVector2Array(-1960, -96, -1960, -32, -2024, -32, -2024, -48, -2008, -48, -2008, -64, -1992, -64, -1992, -80, -1976, -80, -1976, -96)
+
+[node name="CollisionPolygon2D30" type="CollisionPolygon2D" parent="Sprite2D/RigidBody2D"]
+position = Vector2(2704, -7.15256e-07)
+polygon = PackedVector2Array(-1944, -96, -1944, -32, -2024, -32, -2024, -48, -2008, -48, -2008, -64, -1992, -64, -1992, -80, -1976, -80, -1976, -96)
+
+[node name="CollisionPolygon2D31" type="CollisionPolygon2D" parent="Sprite2D/RigidBody2D"]
+position = Vector2(3296, -64)
+polygon = PackedVector2Array(-1944, -96, -1944, -32, -1944, 32, -2088, 32, -2088, 16, -2072, 16, -2072, 0, -2056, 0, -2056, -16, -2040, -16, -2040, -32, -2024, -32, -2024, -48, -2008, -48, -2008, -64, -1992, -64, -1992, -80, -1976, -80, -1976, -96)
+
+[node name="CollisionPolygon2D28" type="CollisionPolygon2D" parent="Sprite2D/RigidBody2D"]
+position = Vector2(2480, -7.15256e-07)
+polygon = PackedVector2Array(-1928, -96, -1912, -96, -1912, -80, -1896, -80, -1896, -64, -1880, -64, -1880, -48, -1864, -48, -1864, -32, -1928, -32)
+
+[node name="CollisionPolygon2D29" type="CollisionPolygon2D" parent="Sprite2D/RigidBody2D"]
+position = Vector2(2720, -7.15256e-07)
+polygon = PackedVector2Array(-1928, -96, -1912, -96, -1912, -80, -1896, -80, -1896, -64, -1880, -64, -1880, -48, -1864, -48, -1864, -32, -1928, -32)
+
+[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="Sprite2D/RigidBody2D"]
+polygon = PackedVector2Array(-1432, -96, -1416, -96, -1416, -80, -1432, -80)
+
+[node name="CollisionPolygon2D3" type="CollisionPolygon2D" parent="Sprite2D/RigidBody2D"]
+position = Vector2(96, -64)
+polygon = PackedVector2Array(-1432, -96, -1416, -96, -1416, -80, -1432, -80)
+
+[node name="CollisionPolygon2D14" type="CollisionPolygon2D" parent="Sprite2D/RigidBody2D"]
+position = Vector2(1248, 0)
+polygon = PackedVector2Array(-1432, -96, -1416, -96, -1416, -80, -1432, -80)
+
+[node name="CollisionPolygon2D16" type="CollisionPolygon2D" parent="Sprite2D/RigidBody2D"]
+position = Vector2(1440, 0)
+polygon = PackedVector2Array(-1432, -96, -1416, -96, -1416, -80, -1432, -80)
+
+[node name="CollisionPolygon2D17" type="CollisionPolygon2D" parent="Sprite2D/RigidBody2D"]
+position = Vector2(1488, -64)
+polygon = PackedVector2Array(-1432, -96, -1416, -96, -1416, -80, -1432, -80)
+
+[node name="CollisionPolygon2D18" type="CollisionPolygon2D" parent="Sprite2D/RigidBody2D"]
+position = Vector2(1488.67, 0)
+polygon = PackedVector2Array(-1432, -96, -1416, -96, -1416, -80, -1432, -80)
+
+[node name="CollisionPolygon2D19" type="CollisionPolygon2D" parent="Sprite2D/RigidBody2D"]
+position = Vector2(1536, 0)
+polygon = PackedVector2Array(-1432, -96, -1416, -96, -1416, -80, -1432, -80)
+
+[node name="CollisionPolygon2D21" type="CollisionPolygon2D" parent="Sprite2D/RigidBody2D"]
+position = Vector2(1632, 0)
+polygon = PackedVector2Array(-1432, -96, -1416, -96, -1416, -80, -1432, -80)
+
+[node name="CollisionPolygon2D15" type="CollisionPolygon2D" parent="Sprite2D/RigidBody2D"]
+position = Vector2(1344, 0)
+polygon = PackedVector2Array(-1432, -96, -1400, -96, -1400, -80, -1432, -80)
+
+[node name="CollisionPolygon2D22" type="CollisionPolygon2D" parent="Sprite2D/RigidBody2D"]
+position = Vector2(1808, 0)
+polygon = PackedVector2Array(-1432, -96, -1400, -96, -1400, -80, -1432, -80)
+
+[node name="CollisionPolygon2D4" type="CollisionPolygon2D" parent="Sprite2D/RigidBody2D"]
+position = Vector2(96, 0)
+polygon = PackedVector2Array(-1464, -96, -1384, -96, -1384, -80, -1464, -80)
+
+[node name="CollisionPolygon2D5" type="CollisionPolygon2D" parent="Sprite2D/RigidBody2D"]
+position = Vector2(96, 0)
+polygon = PackedVector2Array(-840, -96, -872, -96, -872, -81.3333, -870, -81.3333, -870, -32, -842, -32, -842, -81.3333, -840, -81.3333)
+
+[node name="CollisionPolygon2D6" type="CollisionPolygon2D" parent="Sprite2D/RigidBody2D"]
+position = Vector2(-80, 0)
+polygon = PackedVector2Array(-840, -96, -872, -96, -872, -81.3333, -870, -81.3333, -870, -32, -842, -32, -842, -81.3333, -840, -81.3333)
+
+[node name="CollisionPolygon2D7" type="CollisionPolygon2D" parent="Sprite2D/RigidBody2D"]
+position = Vector2(-208, 16)
+polygon = PackedVector2Array(-840, -96, -872, -96, -872, -81.3333, -870, -81.3333, -870, -32, -842, -32, -842, -81.3333, -840, -81.3333)
+
+[node name="CollisionPolygon2D8" type="CollisionPolygon2D" parent="Sprite2D/RigidBody2D"]
+position = Vector2(-368, 32)
+polygon = PackedVector2Array(-840, -96, -872, -96, -872, -81.3333, -870, -81.3333, -870, -32, -842, -32, -842, -81.3333, -840, -81.3333)
+
+[node name="CollisionPolygon2D9" type="CollisionPolygon2D" parent="Sprite2D/RigidBody2D"]
+position = Vector2(1792, 32)
+polygon = PackedVector2Array(-840, -96, -872, -96, -872, -81.3333, -870, -81.3333, -870, -32, -842, -32, -842, -81.3333, -840, -81.3333)
+
+[node name="CollisionPolygon2D10" type="CollisionPolygon2D" parent="Sprite2D/RigidBody2D"]
+position = Vector2(2048, 32)
+polygon = PackedVector2Array(-840, -96, -872, -96, -872, -81.3333, -870, -81.3333, -870, -32, -842, -32, -842, -81.3333, -840, -81.3333)
+
+[node name="CollisionPolygon2D11" type="CollisionPolygon2D" parent="Sprite2D/RigidBody2D"]
+polygon = PackedVector2Array(-456, -96, -408, -96, -408, -80, -456, -80)
+
+[node name="CollisionPolygon2D20" type="CollisionPolygon2D" parent="Sprite2D/RigidBody2D"]
+position = Vector2(704, -64)
+polygon = PackedVector2Array(-456, -96, -408, -96, -408, -80, -456, -80)
+
+[node name="CollisionPolygon2D12" type="CollisionPolygon2D" parent="Sprite2D/RigidBody2D"]
+position = Vector2(48, -64)
+polygon = PackedVector2Array(-456, -96, -328, -96, -328, -80, -456, -80)
+
+[node name="CollisionPolygon2D13" type="CollisionPolygon2D" parent="Sprite2D/RigidBody2D"]
+position = Vector2(224, -64)
+polygon = PackedVector2Array(-456, -96, -392, -96, -392, -80, -456, -80)
+
+[node name="CollisionPolygon2D24" type="CollisionPolygon2D" parent="Sprite2D/RigidBody2D"]
+position = Vector2(224, -64)
+polygon = PackedVector2Array(-776, 32.6667, -536, 32, -536, 64, -776, 64)
+
+[node name="CollisionPolygon2D23" type="CollisionPolygon2D" parent="Sprite2D/RigidBody2D"]
+position = Vector2(816, -64)
+polygon = PackedVector2Array(-456, -96, -392, -96, -392, -80, -456, -80)
+
+[node name="CollisionPolygon2D32" type="CollisionPolygon2D" parent="Sprite2D/RigidBody2D"]
+position = Vector2(1456, 3.57628e-07)
+polygon = PackedVector2Array(-456, -96, -392, -96, -392, -80, -456, -80)
+
+[node name="PlayerSpawn" type="Node2D" parent="."]
+position = Vector2(-2473.06, 83.083)

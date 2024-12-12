@@ -2,9 +2,10 @@ class_name Player extends CharacterBody2D
 
 
 @export var deadzone: float = 0.2
+@export var jump_force: float = 256.0
 
 const COYOTE_TIME: float = 0.05
-const INPUT_BUFFER_TIME: float = 0.1
+const INPUT_BUFFER_TIME: float = 0.05
 const MAX_SPEED: float = 256.0
 
 enum INPUT { LEFT, RIGHT, JUMP }
@@ -30,6 +31,7 @@ func serialize() -> Array:
 		position,
 		velocity,
 		can_jump,
+		jump_force,
 		input,
 	]
 
@@ -41,7 +43,8 @@ func deserialize(data: Array) -> Player:
 	position = data[2]
 	velocity = data[3]
 	can_jump = data[4]
-	input = data[5]
+	jump_force = data[5]
+	input = data[6]
 	return self
 
 
@@ -131,7 +134,7 @@ func update_velocity(input_x: float, delta: float) -> void:
 	if (input[INPUT.JUMP] && can_jump):
 		input[INPUT.JUMP] = 0
 		can_jump = 0
-		velocity.y = -352
+		velocity.y = -jump_force
 	if (!is_on_floor()):
 		velocity += get_gravity() * delta
 
