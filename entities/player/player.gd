@@ -131,7 +131,7 @@ func update_velocity(input_x: float, delta: float) -> void:
 	if (input[INPUT.JUMP] && can_jump):
 		input[INPUT.JUMP] = 0
 		can_jump = 0
-		velocity.y = -256
+		velocity.y = -352
 	if (!is_on_floor()):
 		velocity += get_gravity() * delta
 
