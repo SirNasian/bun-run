@@ -1,5 +1,8 @@
 class_name Player extends CharacterBody2D
 
+
+@export var deadzone: float = 0.2
+
 const COYOTE_TIME: float = 0.05
 const INPUT_BUFFER_TIME: float = 0.1
 const MAX_SPEED: float = 256.0
@@ -10,6 +13,7 @@ static var ID: int = 0
 var id: int = 0
 var can_jump: float = COYOTE_TIME
 var input: Array = [ 0.0, 0.0, 0.0 ];
+
 
 static func instantiate() -> Player:
 	var player = preload("res://entities/player/player.tscn").instantiate()
@@ -59,21 +63,42 @@ func _physics_process(delta: float) -> void:
 
 
 func _input(event: InputEvent) -> void:
-	if ((!event.is_action_type())): return
+	var should_sync: bool = false
 	if (!is_multiplayer_authority()): return
+
+	if (event is InputEventScreenTouch):
+		input[INPUT.LEFT] = 0.0
+		input[INPUT.RIGHT] = 0.0
+		should_sync = true
+
+	if (event is InputEventScreenDrag):
+		should_sync = true
+
+		if (event.screen_relative.y < -32):
+			input[INPUT.JUMP] = INPUT_BUFFER_TIME
+
+		input[INPUT.LEFT] -= event.screen_relative.x / 128.0
+		input[INPUT.RIGHT] += event.screen_relative.x / 128.0
 
 	if (event.is_action("player_left")):
 		var strength = event.get_action_strength("player_left")
-		input[INPUT.LEFT] = strength if (strength > 0.2) else 0.0
+		input[INPUT.LEFT] = strength if (strength > deadzone) else 0.0
+		should_sync = true
 
 	if (event.is_action("player_right")):
 		var strength = event.get_action_strength("player_right")
-		input[INPUT.RIGHT] = strength if (strength > 0.2) else 0.0
+		input[INPUT.RIGHT] = strength if (strength > deadzone) else 0.0
+		should_sync = true
 
 	if (event.is_action_pressed("player_jump")):
 		input[INPUT.JUMP] = INPUT_BUFFER_TIME
+		should_sync = true
 
-	sync_input.rpc(input)
+	input[INPUT.LEFT] = clamp(input[INPUT.LEFT], 0.0, 1.0)
+	input[INPUT.RIGHT] = clamp(input[INPUT.RIGHT], 0.0, 1.0)
+
+	if (should_sync):
+		sync_input.rpc(input)
 
 
 func _on_sync() -> void:
