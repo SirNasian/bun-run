@@ -48,8 +48,9 @@ func _on_client_world_load(id: int) -> void:
 
 
 func _on_peer_disconnected(id: int) -> void:
-	players[id].queue_free()
-	players.erase(id)
+	if (players.has(id)):
+		players[id].queue_free()
+		players.erase(id)
 
 
 @rpc
