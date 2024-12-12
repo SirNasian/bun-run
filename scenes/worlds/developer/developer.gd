@@ -1,5 +1,6 @@
 class_name DeveloperWorld extends Node2D
 
+
 enum ENTITY {
 	PLAYER,
 	GOOMBA,
