@@ -77,7 +77,7 @@ func _input(event: InputEvent) -> void:
 	if (event is InputEventScreenDrag):
 		should_sync = true
 
-		if (event.screen_relative.y < -32):
+		if (event.screen_relative.y < -24):
 			input[INPUT.JUMP] = INPUT_BUFFER_TIME
 
 		input[INPUT.LEFT] -= event.screen_relative.x / 128.0
